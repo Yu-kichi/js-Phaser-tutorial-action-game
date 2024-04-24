@@ -37,13 +37,27 @@ PlayState.create = function(){
 }
 
 PlayState._loadLevel = function(data){
+  //最初に設定
+  this.platforms = this.game.add.group();
   data.platforms.forEach(this._spawnPlatform,this);
   this._spawnCharacters({hero: data.hero});
-}
+
+  //重力追加
+  const GRAVITY = 1200;
+  this.game.physics.arcade.gravity.y = GRAVITY;
+};
 
 PlayState._spawnPlatform = function(platform){
-  this.game.add.sprite(platform.x, platform.y,platform.image)
+  //背景にも物理演算を追加してすり抜けないようにする
+  let sprite = this.platforms.create(
+    platform.x, platform.y, platform.image);
+  this.game.physics.enable(sprite);
+  //足場を落とさないようにする
+  sprite.body.allowGravity = false;
+  //キャラが地面を押さないようにする
+  sprite.body.immovable = true;
 }
+
 
 PlayState._spawnCharacters = function(data){
   this.hero = new Hero(this.game, data.hero.x, data.hero.y);
@@ -70,8 +84,13 @@ Hero.prototype.move = function(direction){
 
 //操作関連
 PlayState.update = function (){
+  this._handleCollisions()
   this._handleInput();
 }
+
+PlayState._handleCollisions = function(){
+  this.game.physics.arcade.collide(this.hero,this.platforms)
+};
 
 PlayState._handleInput = function(){
   if (this.keys.left.isDown){//move hero left
