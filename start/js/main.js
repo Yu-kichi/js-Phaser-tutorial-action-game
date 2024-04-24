@@ -1,3 +1,4 @@
+//初期設定
 PlayState = {};
 
 window.onload = function (){
@@ -28,6 +29,8 @@ PlayState.preload = function(){
   this.game.load.image('hero','images/hero_stopped.png')
 };
 
+//ゲーム開始前の画像やキャラ配置
+
 PlayState.create = function(){
   this.game.add.image(0,0,'background');
   this._loadLevel(this.game.cache.getJSON('level:1'))
@@ -47,6 +50,8 @@ PlayState._spawnCharacters = function(data){
   this.game.add.existing(this.hero);
 }
 
+//キャラクター関連
+
 function Hero(game, x,y){
   Phaser.Sprite.call(this, game, x,y,'hero')
   this.anchor.set(0.5,0.5);
@@ -59,6 +64,7 @@ Hero.prototype.move = function(direction){
 }
 
 
+//操作関連
 PlayState.update = function (){
   this._handleInput();
 }
